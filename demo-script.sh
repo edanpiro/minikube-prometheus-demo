@@ -2,22 +2,26 @@
 
 # install xhyve driver - less resource overhead for the vm
 # https://github.com/kubernetes/minikube/blob/master/DRIVERS.md#xhyve-driver
-brew install docker-machine-driver-xhyve
+# brew install docker-machine-driver-xhyve
 
 # install minikube
 # https://github.com/kubernetes/minikube/releases
 
 # create a cluster. driver is important!
 
-minikube start --vm-driver=xhyve
+minikube start
 
-# install kubectl
+# install kubectl on Ubuntu
 
-brew install kubectl
+sudo apt-get update && sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+
 
 # check that cluster is working
 kubectl config set-context minikube
-
 
 kubectl get componentstatus
 
@@ -26,14 +30,14 @@ kubectl cluster-info
 # deploy an application and a service
 # describe a namespace, deployment, and a service
 
-kubectl create -f monitoring-namespace.yaml
-kubectl create -f prometheus-config.yaml
-kubectl create -f prometheus-deployment.yaml
-kubectl create -f prometheus-service.yaml
+kubectl apply -f monitoring-namespace.yaml
+kubectl apply -f prometheus-config.yaml
+kubectl apply -f prometheus-deployment.yaml
+kubectl apply -f prometheus-service.yaml
 
 # view via CLI:
-kubectl get services --namespace=monitoring
-kubectl get deployments --namespace=monitoring
+kubectl get services -n monitoring
+kubectl get deployments -n monitoring
 
 # show the dashboard
 minikube dashboard
@@ -42,30 +46,30 @@ minikube dashboard
 
 # show prometheus service
 
-minikube service --namespace=monitoring prometheus
+minikube service -n monitoring prometheus
 
 # click around
 # show /targets
 
-# show graph and query of container_memory_usage_bytes{kubernetes_namespace="monitoring"}
+# show graph and query of container_memory_usage_bytes{namespace="monitoring"}
 
 # deploy grafana
-kubectl create -f grafana-deployment.yaml
-kubectl create -f grafana-service.yaml
+kubectl apply -f grafana-deployment.yaml
+kubectl apply -f grafana-service.yaml
 
 # show grafana
-minikube service --namespace=monitoring grafana
+minikube service -n monitoring grafana
 
-# add datasource. make sure type is prometheus http://prometheus:8080
+# add datasource. make sure type is prometheus http://prometheus:9090
 # describe kubernetes DNS
 
 # create a graph:
-#  container_memory_usage_bytes{kubernetes_namespace="monitoring"}
+#  container_memory_usage_bytes{namespace="monitoring"}
 # {{kubernetes_pod_name}
 
 # lets add node metrics
 # deploy node exporter. explain daemonser
-kubectl create -f node-exporter-daemonset.yml
+kubectl apply -f node-exporter-daemonset.yml
 
 # show new target in prometheus. explain it autodiscovering the pods
 
@@ -73,4 +77,3 @@ kubectl create -f node-exporter-daemonset.yml
 
 # node_load1
 # {{kubernetes_pod_node_name}}
-
