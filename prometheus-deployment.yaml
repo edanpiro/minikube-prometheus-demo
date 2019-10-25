@@ -39,7 +39,7 @@ subjects:
   name: default
   namespace: monitoring
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -72,7 +72,8 @@ spec:
         - --storage.tsdb.retention=24h
         command:
         - /bin/prometheus
-        image: quay.io/prometheus/prometheus:v2.0.0
+        # image: quay.io/prometheus/prometheus:v2.0.0
+        image: prom/prometheus
         imagePullPolicy: IfNotPresent
         name: prometheus
         ports:
