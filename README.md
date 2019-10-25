@@ -7,10 +7,7 @@ people with working with minikube, kubectl, prometheus, and grafana.
 
 ## Prerequisites ##
 
-Note: this has been developed and tested on OS X. Others should be
-similar.
-
-* install [minikube](https://github.com/kubernetes/minikube) - on OS X
+* install [minikube](https://github.com/kubernetes/minikube)
   it is highly recommended to use the [hyperkit driver](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#hyperkit-driver).
 * install [kubectl]() - I install using [homebrew](http://brew.sh/index.html), but you can just
   grab the
